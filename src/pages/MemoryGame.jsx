@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 const allIcons = [
   "🎩",
@@ -53,7 +54,7 @@ export default function MemoryQuiz() {
     setStage("memorize");
     setSelectedIcons([]);
     setTimeLeft(100);
-    let shuffled = allIcons.sort(() => 0.5 - Math.random()).slice(0, 5);
+    let shuffled = allIcons.sort(() => 0.5 - Math.random()).slice(0, 4 + level); // Increase icons with level
     setCorrectIcons(shuffled);
     setTimeout(() => setStage("select"), 3000);
   };
@@ -66,28 +67,57 @@ export default function MemoryQuiz() {
   };
 
   const selectIcon = (icon) => {
+    // Prevent selecting more icons than the number of correctIcons
+    if (selectedIcons.length >= correctIcons.length) {
+      toast.error(`You can only select ${correctIcons.length} items!`);
+      return;
+    }
+
+    // Prevent selecting the same icon twice
     if (!selectedIcons.includes(icon)) {
-      // Added missing closing parenthesis
       setSelectedIcons([...selectedIcons, icon]);
     }
   };
 
   const checkResults = () => {
+    // Ensure the user has selected the correct number of icons
+    if (selectedIcons.length !== correctIcons.length) {
+      toast.error(`Please select exactly ${correctIcons.length} items!`);
+      return;
+    }
+
+    // Calculate correct answers
     let correct = selectedIcons.filter((icon) =>
       correctIcons.includes(icon)
     ).length;
     let newScore = score + correct * 10;
     let newStreak = correct === correctIcons.length ? streak + 1 : 0;
 
+    // Update state
     setScore(newScore);
     setStreak(newStreak);
+
+    // Check for level up
     if (newStreak >= 3) {
-      setLevel(level + 1);
+      setLevel((prevLevel) => prevLevel + 1);
       setShowMessage("Level Up! 🎉");
     } else {
       setShowMessage("");
     }
-    startGame();
+
+    // Show feedback
+    if (correct === correctIcons.length) {
+      toast.success("🎉 Correct! You earned 100 points!");
+    } else {
+      toast.error(
+        `😢 Incorrect! You got ${correct} out of ${correctIcons.length} correct.`
+      );
+    }
+
+    // Start a new game after feedback
+    setTimeout(() => {
+      startGame();
+    }, 1000);
   };
 
   return (
@@ -135,7 +165,7 @@ export default function MemoryQuiz() {
         <p className="mb-2 text-lg font-medium text-blue-300">
           {stage === "memorize"
             ? "Memorize these items!"
-            : "Select the correct items!"}
+            : `Select ${correctIcons.length} items!`}
         </p>
 
         {/* Level and Score */}
