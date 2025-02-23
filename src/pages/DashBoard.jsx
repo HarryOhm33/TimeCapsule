@@ -41,7 +41,11 @@ const Dashboard = () => {
           console.warn("No token found. User might not be logged in.");
         }
 
-        const response = await axios.get(`${API_BASE_URL}/api/mycapsule/`);
+        const response = await axios.get(`${API_BASE_URL}/api/mycapsule/`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ Send token in headers
+          },
+        });
 
         setCapsules(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
