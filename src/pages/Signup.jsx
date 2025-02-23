@@ -16,9 +16,11 @@ const AuthForm = () => {
   const navigate = useNavigate();
 
   // API URLs
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   const API_URLS = {
-    signup: "/api/auth/signup", // Removed localhost:5000
-    signin: "/api/auth/login",
+    signup: `${API_BASE_URL}/api/auth/signup`,
+    signin: `${API_BASE_URL}/api/auth/login`,
   };
 
   // Background shapes
