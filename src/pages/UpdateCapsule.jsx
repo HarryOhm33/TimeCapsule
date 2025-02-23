@@ -11,6 +11,8 @@ const Update_Capsule = () => {
   const [message, setMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [file, setFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(""); // ✅ Store existing image URL
+  const [tags, setTags] = useState([]); // ✅ Store tags
   const [loading, setLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -24,12 +26,12 @@ const Update_Capsule = () => {
         const token = localStorage.getItem("token");
         if (!token) {
           alert("No token found! Please log in again.");
-          return navigate("/login"); // Redirect if user is not authenticated
+          return navigate("/login");
         }
 
         const response = await fetch(`${API_BASE_URL}/api/mycapsule/${id}`, {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ Include the token
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -38,6 +40,8 @@ const Update_Capsule = () => {
           setTitle(data.title);
           setMessage(data.message);
           setSelectedDate(new Date(data.date).toISOString().split("T")[0]);
+          setImageUrl(data.imageUrl); // ✅ Set image URL
+          setTags(data.tags || []); // ✅ Set tags
         } else {
           alert("Failed to fetch capsule details.");
           navigate("/dashboard");
@@ -85,7 +89,7 @@ const Update_Capsule = () => {
         method: "PUT",
         body: formData,
         headers: {
-          Authorization: `Bearer ${token}`, // ✅ Add the token in headers
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -117,7 +121,6 @@ const Update_Capsule = () => {
   };
 
   const handleDragLeave = () => setIsDragging(false);
-
   const handleFileChange = (e) => setFile(e.target.files[0]);
 
   const particles = useMemo(
@@ -147,6 +150,27 @@ const Update_Capsule = () => {
             Update Your Time Capsule
           </h2>
 
+          {imageUrl && (
+            <img
+              src={imageUrl}
+              alt="Capsule"
+              className="w-full h-48 object-cover rounded-lg mt-4"
+            />
+          )}
+
+          {tags.length > 0 && (
+            <div className="flex gap-2 mt-2">
+              {tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 text-sm bg-gray-700 text-cyan-300 rounded-full"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
             <input
               type="text"
@@ -170,7 +194,6 @@ const Update_Capsule = () => {
               onChange={(e) => setSelectedDate(e.target.value)}
             />
 
-            {/* ✅ Drag & Drop Box with GIF */}
             <input
               id="fileInput"
               type="file"
@@ -178,38 +201,15 @@ const Update_Capsule = () => {
               onChange={handleFileChange}
             />
 
-            <div
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              className={`mt-4 p-6 w-full border-2 ${
-                isDragging
-                  ? "border-cyan-500 bg-gray-700/40"
-                  : "border-gray-600"
-              } border-dashed rounded-lg text-center cursor-pointer relative flex items-center justify-center`}
-              onClick={() => document.getElementById("fileInput").click()}
-            >
-              <img
-                src="https://media1.giphy.com/media/wAOrqVpbJdfDAjwcSN/giphy.gif?cid=6c09b9527ryil4hk9ve7vcmwn33pausa3zy58f16odnce16l&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s"
-                alt="Upload Animation"
-                className="w-16 h-16 object-contain opacity-90"
-              />
-              <p className="absolute bottom-3 text-gray-300 text-sm">
-                {file
-                  ? `📁 ${file.name}`
-                  : isDragging
-                  ? "🚀 Drop your file here!"
-                  : "Drag & Drop your file or Click to Choose"}
-              </p>
-            </div>
-
             <motion.button
               type="submit"
-              className="mt-6 px-5 py-3 w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all"
+              className="mt-6 px-5 py-3 w-full text-lg font-semibold rounded-lg transition-all 
+                        bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 
+                        focus:ring focus:ring-cyan-400 shadow-lg transform hover:scale-105 active:scale-95"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Update Capsule
+              🚀 Update Capsule
             </motion.button>
           </form>
         </motion.div>
