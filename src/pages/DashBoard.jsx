@@ -5,10 +5,11 @@ import axios from "axios";
 
 const Dashboard = () => {
   const [capsules, setCapsules] = useState([]); // ✅ Default to an empty array
+  const name = JSON.parse(localStorage.getItem("Name"));
 
   // Dummy user data
   const user = {
-    name: "John Doe",
+    name: name,
     profilePicture: "https://placehold.co/150x150", // ✅ Alternative placeholder
     bio: "Time capsule enthusiast 🕰️",
     storageUsage: "1.2GB / 5GB",
