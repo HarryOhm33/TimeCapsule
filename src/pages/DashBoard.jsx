@@ -30,41 +30,60 @@ const Dashboard = () => {
 
   // Fetch capsules from API
   useEffect(() => {
+    const controller = new AbortController(); // ✅ Prevents memory leaks
+
     const fetchCapsules = async () => {
       try {
         const API_BASE_URL =
           import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-        const token = localStorage.getItem("token"); // ✅ Get token from localStorage
+        const token = localStorage.getItem("token");
 
         if (!token) {
           console.warn("No token found. User might not be logged in.");
+          setCapsules([]); // ✅ Prevents `.map()` error
+          return;
         }
 
         const response = await axios.get(`${API_BASE_URL}/api/mycapsule/`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // ✅ Send token in headers
-          },
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true, // ✅ Include cookies if required
+          signal: controller.signal, // ✅ Handles unmounting
         });
 
         setCapsules(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
-        console.error(
-          "Error fetching capsules:",
-          error.response || error.message
-        );
-
-        if (error.response?.status === 401) {
-          console.warn("Unauthorized: Token might be invalid or expired.");
-        } else {
-          console.warn("An unexpected error occurred.");
+        if (axios.isCancel(error)) {
+          console.log("Fetch aborted due to unmount.");
+          return;
         }
 
-        setCapsules([]); // Prevents `.map()` error
+        console.error("API Error:", error.response || error.message);
+
+        if (error.response) {
+          switch (error.response.status) {
+            case 401:
+              console.warn("Unauthorized: Token expired or invalid.");
+              break;
+            case 403:
+              console.warn(
+                "Forbidden: You do not have access to this resource."
+              );
+              break;
+            case 500:
+              console.warn("Server Error: Please try again later.");
+              break;
+            default:
+              console.warn("Unexpected error occurred.");
+          }
+        }
+
+        setCapsules([]); // ✅ Prevents `.map()` issues
       }
     };
 
     fetchCapsules();
+
+    return () => controller.abort(); // ✅ Cleanup function
   }, []);
 
   // Helper function to check if capsule is openable
