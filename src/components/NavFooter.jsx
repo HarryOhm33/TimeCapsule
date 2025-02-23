@@ -8,6 +8,7 @@ import {
   FaRocket,
   FaHeart,
 } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -137,6 +138,7 @@ const Navbar = () => {
                     onClick={() => {
                       localStorage.removeItem("token"); // Remove token
                       setIsLoggedIn(false); // Update state
+                      toast.error("Logged Out!!");
                       window.location.href = "/"; // Redirect to home
                     }}
                     className="bg-red-500 px-4 py-2 rounded-full text-white font-medium hover:bg-red-600 transition-colors cursor-pointer"

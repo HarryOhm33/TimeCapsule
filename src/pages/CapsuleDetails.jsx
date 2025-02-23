@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
 import Spinner from "../components/LoadingSpinner";
+import toast from "react-hot-toast";
 
 const CapsuleDetails = () => {
   const { id } = useParams();
@@ -38,7 +39,7 @@ const CapsuleDetails = () => {
         );
 
         if (error.response?.status === 401) {
-          alert("⚠️ Unauthorized. Please log in again.");
+          toast.error("⚠️ Unauthorized. Please log in again.");
           navigate("/auth");
         }
       } finally {
@@ -61,7 +62,7 @@ const CapsuleDetails = () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        alert("⚠️ You are not logged in. Please log in first.");
+        toast.error("⚠️ You are not logged in. Please log in first.");
         return;
       }
 
@@ -69,11 +70,11 @@ const CapsuleDetails = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      alert("✅ Capsule deleted successfully!");
+      toast.success("Capsule deleted successfully!");
       navigate("/dashboard");
     } catch (error) {
       console.error("❌ Error deleting capsule:", error);
-      alert(
+      toast.error(
         `❌ Failed to delete capsule: ${
           error.response?.data?.message || error.message
         }`

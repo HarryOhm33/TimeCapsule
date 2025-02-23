@@ -24,7 +24,7 @@ const Create_Capsule = () => {
       !selectedDate.trim() ||
       (!sendToLovedOne && !message.trim())
     ) {
-      alert("⚠️ Please fill in all required fields.");
+      toast.error("Please fill in all required fields.");
       setLoading(false);
       return;
     }
@@ -84,7 +84,7 @@ const Create_Capsule = () => {
       navigate("/dashboard");
     } catch (error) {
       console.error("❌ Error creating capsule:", error);
-      alert(`❌ Error: ${error.message}`);
+      toast.error(`❌ Error: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -118,7 +118,7 @@ const Create_Capsule = () => {
     const selectedFile = e.target.files[0];
 
     if (selectedFile && !selectedFile.type.startsWith("image/")) {
-      alert("❌ Only image files are allowed!");
+      toast.error("❌ Only image files are allowed!");
       return;
     }
 

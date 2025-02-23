@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import Spinner from "../components/LoadingSpinner";
+import { toast } from "react-hot-toast";
 
 const Update_Capsule = () => {
   const { id } = useParams();
@@ -49,7 +50,7 @@ const Update_Capsule = () => {
 
         const token = localStorage.getItem("token");
         if (!token) {
-          alert("No token found! Please log in again.");
+          toast.error("No token found! Please log in again.");
           return navigate("/login");
         }
 
@@ -65,12 +66,12 @@ const Update_Capsule = () => {
           setMessage(data.message);
           setSelectedDate(new Date(data.date).toISOString().split("T")[0]);
         } else {
-          alert("Failed to fetch capsule details.");
+          toast.error("Failed to fetch capsule details.");
           navigate("/dashboard");
         }
       } catch (error) {
         console.error("Error fetching capsule:", error);
-        alert("Something went wrong!");
+        toast.error("Something went wrong!");
       } finally {
         setLoading(false);
       }
@@ -84,7 +85,7 @@ const Update_Capsule = () => {
     setLoading(true);
 
     if (!title || !selectedDate || !message) {
-      alert("⚠️ Please fill all required fields.");
+      toast.error("Please fill all required fields.");
       setLoading(false);
       return;
     }
@@ -95,7 +96,7 @@ const Update_Capsule = () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        alert("Session expired. Please log in again.");
+        toast.error("Session expired. Please log in again.");
         return navigate("/login");
       }
 
@@ -117,14 +118,14 @@ const Update_Capsule = () => {
 
       const data = await response.json();
       if (response.ok) {
-        alert("🎉 Capsule updated successfully!");
+        toast.success("🎉 Capsule updated successfully!");
         navigate(`/dashboard/capsule/${id}`);
       } else {
-        alert(`❌ Error: ${data.message}`);
+        toast.error(`Error: ${data.message}`);
       }
     } catch (error) {
       console.error("❌ Error updating capsule:", error);
-      alert("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
