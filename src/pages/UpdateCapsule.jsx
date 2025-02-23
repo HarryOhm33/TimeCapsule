@@ -18,11 +18,26 @@ const Update_Capsule = () => {
     const fetchCapsule = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/mycapsule/${id}`);
+        const API_BASE_URL =
+          import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("No token found! Please log in again.");
+          return navigate("/login"); // Redirect if user is not authenticated
+        }
+
+        const response = await fetch(`${API_BASE_URL}/api/mycapsule/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ Include the token
+          },
+        });
+
         const data = await response.json();
         if (response.ok) {
           setTitle(data.title);
           setMessage(data.message);
+          setSelectedDate(new Date(data.date).toISOString().split("T")[0]);
         } else {
           alert("Failed to fetch capsule details.");
           navigate("/dashboard");
@@ -49,6 +64,15 @@ const Update_Capsule = () => {
     }
 
     try {
+      const API_BASE_URL =
+        import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Session expired. Please log in again.");
+        return navigate("/login");
+      }
+
       const formData = new FormData();
       formData.append("title", title);
       formData.append("date", selectedDate);
@@ -57,9 +81,12 @@ const Update_Capsule = () => {
         formData.append("image", file);
       }
 
-      const response = await fetch(`/api/mycapsule/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/mycapsule/${id}`, {
         method: "PUT",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ Add the token in headers
+        },
       });
 
       const data = await response.json();
