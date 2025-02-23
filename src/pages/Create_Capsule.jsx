@@ -46,7 +46,7 @@ const Create_Capsule = () => {
         formData.append("image", file);
       }
 
-      console.log("🚀 Sending FormData:", Object.fromEntries(formData));
+      console.log("🚀 Sending FormData:", [...formData.entries()]);
 
       const API_BASE_URL =
         import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -110,7 +110,16 @@ const Create_Capsule = () => {
 
   const handleDragLeave = () => setIsDragging(false);
 
-  const handleFileChange = (e) => setFile(e.target.files[0]);
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile && !selectedFile.type.startsWith("image/")) {
+      alert("❌ Only image files are allowed!");
+      return;
+    }
+
+    setFile(selectedFile);
+  };
 
   const particles = useMemo(
     () =>
