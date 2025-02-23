@@ -79,6 +79,18 @@ function App() {
       ),
     },
     {
+      path: "/dashboard/update-capsule/:id",
+      element: (
+        <ProtectedRoute>
+          <div>
+            <Navbar />
+            <Update_Capsule />
+            <Footer />
+          </div>
+        </ProtectedRoute>
+      ),
+    },
+    {
       path: "/capsule/:id", // ✅ Fixing URL structure
       element: (
         <ProtectedRoute>
