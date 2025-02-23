@@ -37,6 +37,10 @@ const Dashboard = () => {
 
         const token = localStorage.getItem("token"); // ✅ Get token from localStorage
 
+        if (!token) {
+          console.warn("No token found. User might not be logged in.");
+        }
+
         const response = await axios.get(`${API_BASE_URL}/api/mycapsule/`, {
           headers: {
             Authorization: `Bearer ${token}`, // ✅ Send token in headers
@@ -49,6 +53,13 @@ const Dashboard = () => {
           "Error fetching capsules:",
           error.response || error.message
         );
+
+        if (error.response?.status === 401) {
+          console.warn("Unauthorized: Token might be invalid or expired.");
+        } else {
+          console.warn("An unexpected error occurred.");
+        }
+
         setCapsules([]); // Prevents `.map()` error
       }
     };
