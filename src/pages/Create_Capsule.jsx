@@ -18,14 +18,12 @@ const Create_Capsule = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Basic Validation
     if (
-      !title ||
-      !selectedDate ||
-      (sendToLovedOne && !recipientEmail) ||
-      (!sendToLovedOne && !message)
+      !title.trim() ||
+      !selectedDate.trim() ||
+      (!sendToLovedOne && !message.trim())
     ) {
-      alert("⚠️ Please fill all required fields.");
+      alert("⚠️ Please fill in all required fields.");
       setLoading(false);
       return;
     }
@@ -33,12 +31,12 @@ const Create_Capsule = () => {
     try {
       const formData = new FormData();
       formData.append("title", title);
-      const selectedUTCDate = new Date(selectedDate).toISOString();
-      formData.append("date", selectedUTCDate);
+      formData.append("date", new Date(selectedDate).toISOString()); // ✅ Convert to ISO format
 
-      // Conditionally include message or recipientEmail
+      // ✅ Ensure message is always included
       if (sendToLovedOne) {
         formData.append("recipientEmail", recipientEmail);
+        formData.append("message", "Sent to a loved one"); // ✅ Default message
       } else {
         formData.append("message", message);
       }
@@ -47,11 +45,10 @@ const Create_Capsule = () => {
         formData.append("image", file);
       }
 
-      console.log("🚀 Sending FormData:", [...formData.entries()]);
+      console.log("🚀 Sending FormData:", [...formData.entries()]); // ✅ Debug request
 
       const API_BASE_URL =
         import.meta.env.VITE_API_URL || "http://localhost:5000";
-
       const apiEndpoint = sendToLovedOne
         ? `${API_BASE_URL}/api/capsule/create`
         : `${API_BASE_URL}/api/mycapsule/`;
@@ -62,32 +59,29 @@ const Create_Capsule = () => {
         method: "POST",
         body: formData,
         headers: {
-          Authorization: `Bearer ${token}`, // ✅ Correct authentication
-          // DO NOT set Content-Type, `fetch` will handle it automatically for FormData
+          Authorization: `Bearer ${token}`,
         },
       });
 
       const data = await response.json();
+      console.log("📡 API Response:", data); // ✅ Debug response
+
       if (!response.ok) {
         throw new Error(
           data.message || "Failed to create capsule. Please try again."
         );
       }
 
-      if (response.ok) {
-        alert(
-          sendToLovedOne
-            ? "🎉 Capsule sent to your loved one!"
-            : "🎉 Capsule Created Successfully!"
-        );
-        resetForm();
-        navigate("/dashboard");
-      } else {
-        alert(`❌ Error: ${data.message}`);
-      }
+      alert(
+        sendToLovedOne
+          ? "🎉 Capsule sent to your loved one!"
+          : "🎉 Capsule Created Successfully!"
+      );
+      resetForm();
+      navigate("/dashboard");
     } catch (error) {
       console.error("❌ Error creating capsule:", error);
-      alert("❌ Something went wrong. Please try again.");
+      alert(`❌ Error: ${error.message}`);
     } finally {
       setLoading(false);
     }
