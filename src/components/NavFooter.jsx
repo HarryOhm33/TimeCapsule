@@ -90,7 +90,7 @@ const Navbar = () => {
                 style={{ cursor: "pointer" }}
               >
                 <Link
-                  to="/fun-zone/memory-game" // Replace with your desired route
+                  to="/fun-zone" // Replace with your desired route
                   className="text-gray-300 hover:text-cyan-400 transition-colors"
                 >
                   Play Zone 🎮
