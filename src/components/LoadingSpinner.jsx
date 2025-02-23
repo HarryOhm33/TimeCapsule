@@ -1,79 +1,88 @@
 import React, { useEffect, useState } from "react";
 
-const LoadingSpinner = () => {
-  const [dots, setDots] = useState(Array(12).fill(0));
+const Spinner = () => {
+  const totalDots = 18;
+  const [visibleDots, setVisibleDots] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDots((prev) =>
-        prev.map((_, index) =>
-          index === prev.length - 1 ? 0 : prev[index] + 1
-        )
-      );
-    }, 100);
-
+      setVisibleDots((prev) => (prev < totalDots ? prev + 1 : 0));
+    }, 50);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div style={styles.container}>
-      <div style={styles.spinner}>
-        {dots.map((_, index) => (
-          <div
-            key={index}
-            style={{
-              ...styles.dot,
-              transform: `rotate(${index * 30}deg) translateY(-40px)`,
-              opacity: (index + 1) / dots.length,
-            }}
-          />
-        ))}
+    <div style={styles.overlay}>
+      <div style={styles.container}>
+        <div style={styles.spinner}>
+          {[...Array(totalDots)].map((_, i) => {
+            const size = 4 + (i / totalDots) * 6;
+            const opacity = (i + 1) / totalDots;
+            const brightness = 50 + (i / totalDots) * 50;
+            return (
+              <div
+                key={i}
+                style={{
+                  ...styles.dot,
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  opacity: i < visibleDots ? opacity * 0.7 : 0,
+                  filter: `brightness(${brightness}%) drop-shadow(0 0 4px cyan)`,
+                  transform: `translate(-50%, 50%) rotate(${
+                    i * (360 / totalDots)
+                  }deg) translateY(28px)`,
+                }}
+              />
+            );
+          })}
+        </div>
+        <p style={styles.loadingText}>Please Wait!</p>
       </div>
-      <p style={styles.loadingText}>FETCHING</p>
     </div>
   );
 };
 
-// Inline CSS styles
 const styles = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0, 0, 0, 0.8)", // Slight transparency
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999, // Ensures it's on top
+  },
   container: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "100vh",
-    backgroundColor: "#000",
   },
   spinner: {
     position: "relative",
     width: "80px",
     height: "80px",
-    animation: "spin 1.5s linear infinite", // ✅ Rotation animation
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   dot: {
     position: "absolute",
-    width: "10px",
-    height: "10px",
     backgroundColor: "cyan",
     borderRadius: "50%",
-    top: "50%",
-    left: "50%",
-    transition: "opacity 0.2s ease-in-out",
+    transition: "opacity 0.1s ease-in-out",
   },
   loadingText: {
     color: "cyan",
     fontSize: "18px",
     fontWeight: "bold",
     marginTop: "20px",
+    textShadow: "0 0 4px cyan",
+    opacity: 0.8,
   },
 };
 
-// ✅ Add global keyframes for spinning
-const styleSheet = document.styleSheets[0];
-const keyframes = `@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }`;
-styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
-
-export default LoadingSpinner;
+export default Spinner;

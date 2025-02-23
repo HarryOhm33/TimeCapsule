@@ -6,6 +6,8 @@ import Verify_Signup from "./pages/Verify_Signup";
 import Create_Capsule from "./pages/Create_Capsule";
 import Success from "./pages/Success";
 import ProtectedRoute from "./components/ProtectedRoute"; // ✅ Import ProtectedRoute
+import CapsuleDetails from "./pages/CapsuleDetails";
+import Update_Capsule from "./pages/UpdateCapsule";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -58,6 +60,30 @@ function App() {
           <div>
             <Navbar />
             <Dashboard />
+            <Footer />
+          </div>
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/dashboard/capsule/:id", // ✅ Protecting Dashboard Route
+      element: (
+        <ProtectedRoute>
+          <div>
+            <Navbar />
+            <CapsuleDetails />
+            <Footer />
+          </div>
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/dashboard/update-capsule/:id", // ✅ Protecting Dashboard Route
+      element: (
+        <ProtectedRoute>
+          <div>
+            <Navbar />
+            <Update_Capsule />
             <Footer />
           </div>
         </ProtectedRoute>
