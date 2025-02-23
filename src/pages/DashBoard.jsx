@@ -34,33 +34,29 @@ const Dashboard = () => {
       try {
         const API_BASE_URL =
           import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-        const token = localStorage.getItem("token"); // ✅ Get token from localStorage
+        const token = localStorage.getItem("token");
 
         if (!token) {
           console.warn("No token found. User might not be logged in.");
         }
 
         const response = await axios.get(`${API_BASE_URL}/api/mycapsule/`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // ✅ Send token in headers
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        setCapsules(Array.isArray(response.data) ? response.data : []);
+        console.log("✅ API Response:", response.data); // Debugging log
+
+        if (Array.isArray(response.data)) {
+          setCapsules(response.data);
+        } else {
+          setCapsules([]); // Ensures it's always an array
+        }
       } catch (error) {
         console.error(
-          "Error fetching capsules:",
+          "❌ Error fetching capsules:",
           error.response || error.message
         );
-
-        if (error.response?.status === 401) {
-          console.warn("Unauthorized: Token might be invalid or expired.");
-        } else {
-          console.warn("An unexpected error occurred.");
-        }
-
-        setCapsules([]); // Prevents `.map()` error
+        setCapsules([]); // Prevents undefined `.map()`
       }
     };
 
@@ -182,7 +178,7 @@ const Dashboard = () => {
         <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent mb-4">
           Your Capsules
         </h2>
-        {capsules && capsules.length > 0 ? (
+        {capsules && Array.isArray(capsules) && capsules.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {capsules.map((capsule) => (
               <motion.div
@@ -216,7 +212,7 @@ const Dashboard = () => {
         ) : (
           <p className="text-gray-400 text-center text-2xl font-semibold my-16">
             No Capsules Found!
-          </p> // ✅ Prevents `.map()` error
+          </p>
         )}
 
         <Link to="/create_capsule">
