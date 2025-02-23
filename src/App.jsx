@@ -8,6 +8,7 @@ import Success from "./pages/Success";
 import ProtectedRoute from "./components/ProtectedRoute"; // ✅ Import ProtectedRoute
 import CapsuleDetails from "./pages/CapsuleDetails";
 import Update_Capsule from "./pages/UpdateCapsule";
+import MemoryGame from "./pages/MemoryGame";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -99,6 +100,16 @@ function App() {
             <Footer />
           </div>
         </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/fun-zone/memory-game", // ✅ Protecting Create Capsule too (if needed)
+      element: (
+        <div>
+          <Navbar />
+          <MemoryGame />
+          <Footer />
+        </div>
       ),
     },
   ]);

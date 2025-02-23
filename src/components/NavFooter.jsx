@@ -64,10 +64,10 @@ const Navbar = () => {
             <div className="hidden md:flex space-x-6">
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                style={{ cursor: "pointer" }} // Add pointer cursor
+                style={{ cursor: "pointer" }}
               >
                 <Link
-                  to="/" // Use "to" instead of "href"
+                  to="/"
                   className="text-gray-300 hover:text-cyan-400 transition-colors"
                 >
                   Home
@@ -75,13 +75,25 @@ const Navbar = () => {
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                style={{ cursor: "pointer" }} // Add pointer cursor
+                style={{ cursor: "pointer" }}
               >
                 <Link
-                  to="/create_capsule" // Replace with your desired route
+                  to="/create_capsule"
                   className="text-gray-300 hover:text-cyan-400 transition-colors"
                 >
                   Create Capsule →
+                </Link>
+              </motion.div>
+              {/* Add Play Zone Link Here */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                style={{ cursor: "pointer" }}
+              >
+                <Link
+                  to="/fun-zone/memory-game" // Replace with your desired route
+                  className="text-gray-300 hover:text-cyan-400 transition-colors"
+                >
+                  Play Zone 🎮
                 </Link>
               </motion.div>
             </div>
