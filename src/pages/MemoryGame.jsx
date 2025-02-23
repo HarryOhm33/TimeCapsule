@@ -2,7 +2,18 @@ import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 
 const allIcons = [
-  "🎩", "📜", "🔑", "📸", "📅", "🎶", "🏆", "🕰", "🎲", "🚀", "🎉", "💡"
+  "🎩",
+  "📜",
+  "🔑",
+  "📸",
+  "📅",
+  "🎶",
+  "🏆",
+  "🕰",
+  "🎲",
+  "🚀",
+  "🎉",
+  "💡",
 ];
 
 export default function MemoryQuiz() {
@@ -55,13 +66,16 @@ export default function MemoryQuiz() {
   };
 
   const selectIcon = (icon) => {
-    if (!selectedIcons.includes(icon) {
+    if (!selectedIcons.includes(icon)) {
+      // Added missing closing parenthesis
       setSelectedIcons([...selectedIcons, icon]);
     }
   };
 
   const checkResults = () => {
-    let correct = selectedIcons.filter((icon) => correctIcons.includes(icon)).length;
+    let correct = selectedIcons.filter((icon) =>
+      correctIcons.includes(icon)
+    ).length;
     let newScore = score + correct * 10;
     let newStreak = correct === correctIcons.length ? streak + 1 : 0;
 
@@ -115,9 +129,13 @@ export default function MemoryQuiz() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className="text-3xl font-extrabold mb-4 text-yellow-400">🧠 Memory Challenge</h2>
+        <h2 className="text-3xl font-extrabold mb-4 text-yellow-400">
+          🧠 Memory Challenge
+        </h2>
         <p className="mb-2 text-lg font-medium text-blue-300">
-          {stage === "memorize" ? "Memorize these items!" : "Select the correct items!"}
+          {stage === "memorize"
+            ? "Memorize these items!"
+            : "Select the correct items!"}
         </p>
 
         {/* Level and Score */}
@@ -132,7 +150,10 @@ export default function MemoryQuiz() {
 
         {/* Level Up Message */}
         {showMessage && (
-          <motion.p className="text-blue-400 text-lg font-bold" animate={{ scale: [1, 1.2, 1] }}>
+          <motion.p
+            className="text-blue-400 text-lg font-bold"
+            animate={{ scale: [1, 1.2, 1] }}
+          >
             {showMessage}
           </motion.p>
         )}
@@ -144,7 +165,12 @@ export default function MemoryQuiz() {
               className="h-full rounded-full"
               style={{ width: `${timeLeft}%` }}
               animate={{
-                backgroundColor: timeLeft <= 50 ? (timeLeft <= 30 ? "#DC2626" : "#F59E0B") : "#1E40AF",
+                backgroundColor:
+                  timeLeft <= 50
+                    ? timeLeft <= 30
+                      ? "#DC2626"
+                      : "#F59E0B"
+                    : "#1E40AF",
               }}
               transition={{ ease: "linear" }}
             ></motion.div>

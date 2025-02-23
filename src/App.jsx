@@ -8,10 +8,11 @@ import Success from "./pages/Success";
 import ProtectedRoute from "./components/ProtectedRoute"; // ✅ Import ProtectedRoute
 import CapsuleDetails from "./pages/CapsuleDetails";
 import Update_Capsule from "./pages/UpdateCapsule";
-import MemoryGame from "./pages/MemoryGame";
 import FunZone from "./pages/FunZone";
+import MemoryQuiz from "./pages/MemoryGame";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import GuessTheAge from "./pages/GuessTheAge";
 
 function App() {
   const router = createBrowserRouter([
@@ -130,7 +131,17 @@ function App() {
       element: (
         <div>
           <Navbar />
-          <MemoryGame />
+          <MemoryQuiz />
+          <Footer />
+        </div>
+      ),
+    },
+    {
+      path: "/fun-zone/guess-game", // ✅ Protecting Create Capsule too (if needed)
+      element: (
+        <div>
+          <Navbar />
+          <GuessTheAge />
           <Footer />
         </div>
       ),

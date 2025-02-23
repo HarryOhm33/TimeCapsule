@@ -77,13 +77,18 @@ const FunZone = () => {
                   Test your memory skills by matching icons in this fun and
                   challenging game!
                 </p>
-                <motion.button
-                  className="px-6 py-3 bg-cyan-500/10 text-cyan-400 font-semibold rounded-lg hover:bg-cyan-500/20 transition-colors"
+                <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Play Now →
-                </motion.button>
+                  <Link to="/fun-zone/memory-game">
+                    {" "}
+                    {/* Replace with your desired route */}
+                    <button className="px-6 py-3 bg-cyan-500/10 text-cyan-400 font-semibold rounded-lg hover:bg-cyan-500/20 transition-colors">
+                      Play Now →
+                    </button>
+                  </Link>
+                </motion.div>
               </div>
             </Link>
           </motion.div>
@@ -104,13 +109,18 @@ const FunZone = () => {
                   Can you guess the correct age? Test your intuition in this
                   exciting guessing game!
                 </p>
-                <motion.button
-                  className="px-6 py-3 bg-purple-500/10 text-purple-400 font-semibold rounded-lg hover:bg-purple-500/20 transition-colors"
+                <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Play Now →
-                </motion.button>
+                  <Link to="/fun-zone/guess-the-age">
+                    {" "}
+                    {/* Replace with your desired route */}
+                    <button className="px-6 py-3 bg-purple-500/10 text-purple-400 font-semibold rounded-lg hover:bg-purple-500/20 transition-colors">
+                      Play Now →
+                    </button>
+                  </Link>
+                </motion.div>
               </div>
             </Link>
           </motion.div>
