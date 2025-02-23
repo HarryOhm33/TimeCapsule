@@ -2,36 +2,41 @@ import React, { useMemo, useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { Pointer } from "lucide-react";
 
 const CapsuleDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [capsule, setCapsule] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCapsule = async () => {
       try {
-        const { data } = await axios.get(`/api/mycapsule/${id}`);
+        const API_BASE_URL =
+          import.meta.env.VITE_API_URL || "http://localhost:5000";
+        const { data } = await axios.get(`${API_BASE_URL}/api/mycapsule/${id}`);
+        console.log("✅ Capsule Data:", data);
         setCapsule(data);
       } catch (error) {
-        console.error("Error fetching capsule:", error);
+        console.error("❌ Error fetching capsule:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchCapsule();
   }, [id]);
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this capsule?"
-    );
-    if (!confirmDelete) return;
+    if (!window.confirm("Are you sure you want to delete this capsule?"))
+      return;
 
     try {
-      await axios.delete(`/api/mycapsule/${id}`);
+      const API_BASE_URL =
+        import.meta.env.VITE_API_URL || "http://localhost:5000";
+      await axios.delete(`${API_BASE_URL}/api/mycapsule/${id}`);
       navigate("/dashboard");
     } catch (error) {
-      console.error("Error deleting capsule:", error);
+      console.error("❌ Error deleting capsule:", error);
     }
   };
 
@@ -59,13 +64,23 @@ const CapsuleDetails = () => {
     []
   );
 
-  if (!capsule)
+  if (loading) {
     return (
       <div className="text-center text-gray-400 pt-32">Loading Capsule...</div>
     );
+  }
+
+  if (!capsule) {
+    return (
+      <div className="text-center text-gray-400 pt-32">
+        ❌ Capsule Not Found
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100 pt-24 pb-8 px-8 relative overflow-hidden">
+      {/* Background Animation */}
       <div className="fixed inset-0 z-0 overflow-hidden">
         {shapes.map((shape, i) => (
           <motion.div
@@ -123,6 +138,7 @@ const CapsuleDetails = () => {
         ))}
       </div>
 
+      {/* Capsule Details */}
       <motion.div
         className="max-w-4xl mx-auto relative z-10"
         initial={{ opacity: 0, y: 20 }}
@@ -139,18 +155,14 @@ const CapsuleDetails = () => {
         </motion.h1>
 
         {capsule.imageUrl && (
-          <motion.div
-            className="mb-6"
+          <motion.img
+            src={capsule.imageUrl}
+            alt={capsule.title}
+            className="w-full h-64 object-cover rounded-lg shadow-lg mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-          >
-            <img
-              src={capsule.imageUrl}
-              alt={capsule.title}
-              className="w-full h-64 object-cover rounded-lg shadow-lg"
-            />
-          </motion.div>
+          />
         )}
 
         <motion.div
@@ -159,25 +171,19 @@ const CapsuleDetails = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
-          <p className="text-gray-300">{capsule.message}</p>
+          <p className="text-gray-300">
+            {capsule.message || "No message available."}
+          </p>
         </motion.div>
 
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-        >
-          <div className="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 shadow-xl border border-gray-700/50">
-            <h3 className="text-xl font-semibold text-cyan-400 mb-2">
-              Unlock Date
-            </h3>
-            <p className="text-gray-300">
-              {new Date(capsule.date).toLocaleDateString()}
-            </p>
-          </div>
-
-          <div className="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 shadow-xl border border-gray-700/50">
+        {/* Check if `tags` exist before mapping */}
+        {capsule.tags && capsule.tags.length > 0 && (
+          <motion.div
+            className="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 shadow-xl border border-gray-700/50 mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+          >
             <h3 className="text-xl font-semibold text-cyan-400 mb-2">Tags</h3>
             <div className="flex flex-wrap gap-2">
               {capsule.tags.map((tag, index) => (
@@ -189,28 +195,21 @@ const CapsuleDetails = () => {
                 </span>
               ))}
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
 
-        <motion.div
-          className="flex gap-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-        >
+        {/* Buttons */}
+        <div className="flex gap-4">
           <Link
             to={`/dashboard/update-capsule/${capsule._id}`}
-            className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full text-lg font-semibold shadow-lg hover:scale-105 transition-transform duration-200"
+            className="btn-primary"
           >
             Update Capsule
           </Link>
-          <button
-            onClick={handleDelete}
-            className="px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-full text-lg font-semibold shadow-lg hover:scale-105 transition-transform duration-200 hover:cursor-pointer"
-          >
+          <button onClick={handleDelete} className="btn-danger">
             Delete Capsule
           </button>
-        </motion.div>
+        </div>
       </motion.div>
     </div>
   );

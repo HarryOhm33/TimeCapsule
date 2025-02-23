@@ -200,7 +200,8 @@ const Dashboard = () => {
                 </p>
                 {isOpenable(capsule.date) && (
                   <Link
-                    to={`capsule/${capsule._id}`}
+                    to={`/capsule/${capsule._id}`}
+                    state={{ capsule }} // ✅ Passing capsule data
                     className="mt-4 inline-block px-4 py-2 bg-green-500 text-black rounded-lg font-semibold shadow-lg hover:scale-105 transition-transform duration-200"
                   >
                     Open Capsule
