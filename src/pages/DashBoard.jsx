@@ -37,9 +37,14 @@ const Dashboard = () => {
 
         const token = localStorage.getItem("token"); // ✅ Get token from localStorage
 
+        if (!token) {
+          console.warn("No token found. Redirecting to login...");
+          return; // ✅ Exit function early if token is missing
+        }
+
         const response = await axios.get(`${API_BASE_URL}/api/mycapsule/`, {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ Send token in headers
+            Authorization: `Bearer ${token}`, // ✅ Send token only if it exists
           },
         });
 
@@ -47,9 +52,15 @@ const Dashboard = () => {
       } catch (error) {
         console.error(
           "Error fetching capsules:",
-          error.response || error.message
+          error.response?.data || error.message
         );
-        setCapsules([]); // Prevents `.map()` error
+
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token"); // ✅ Remove invalid token
+          window.location.href = "/login"; // ✅ Redirect to login page
+        }
+
+        setCapsules([]); // Prevent `.map()` error
       }
     };
 
