@@ -33,7 +33,8 @@ const Create_Capsule = () => {
     try {
       const formData = new FormData();
       formData.append("title", title);
-      formData.append("date", selectedDate);
+      const selectedUTCDate = new Date(selectedDate).toISOString();
+      formData.append("date", selectedUTCDate);
 
       // Conditionally include message or recipientEmail
       if (sendToLovedOne) {
