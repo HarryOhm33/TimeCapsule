@@ -94,7 +94,7 @@ const AuthForm = () => {
         localStorage.setItem("token", response.data.token);
 
         // ✅ Optionally, save user data if available
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("Name", JSON.stringify(response.data.user));
 
         // ✅ Reload to reflect login state in Navbar
         window.location.href = "/dashboard";
