@@ -34,9 +34,14 @@ const Dashboard = () => {
       try {
         const API_BASE_URL =
           import.meta.env.VITE_API_URL || "http://localhost:5000"; // ✅ Now it's defined
-        setCapsules(Array.isArray(response.data) ? response.data : []); // ✅ Ensure it's an array
+
+        const response = await axios.get(`${API_BASE_URL}/api/mycapsule/`); // ✅ Correct API request
+        setCapsules(Array.isArray(response.data) ? response.data : []); // ✅ Now it works
       } catch (error) {
-        console.error("Error fetching capsules:", error);
+        console.error(
+          "Error fetching capsules:",
+          error.response || error.message
+        );
         setCapsules([]); // ✅ Prevent `.map()` error
       }
     };
