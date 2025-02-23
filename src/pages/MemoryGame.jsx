@@ -68,14 +68,19 @@ export default function MemoryQuiz() {
 
   const selectIcon = (icon) => {
     // Prevent selecting more icons than the number of correctIcons
-    if (selectedIcons.length >= correctIcons.length) {
+    if (
+      selectedIcons.length >= correctIcons.length &&
+      !selectedIcons.includes(icon)
+    ) {
       toast.error(`You can only select ${correctIcons.length} items!`);
       return;
     }
 
-    // Prevent selecting the same icon twice
-    if (!selectedIcons.includes(icon)) {
-      setSelectedIcons([...selectedIcons, icon]);
+    // Toggle selection: unselect if already selected
+    if (selectedIcons.includes(icon)) {
+      setSelectedIcons((prev) => prev.filter((i) => i !== icon));
+    } else {
+      setSelectedIcons((prev) => [...prev, icon]);
     }
   };
 
@@ -114,10 +119,10 @@ export default function MemoryQuiz() {
       );
     }
 
-    // Start a new game after feedback
+    // Delay before starting the next round
     setTimeout(() => {
       startGame();
-    }, 1000);
+    }, 1500); // 1.5 seconds delay
   };
 
   return (
