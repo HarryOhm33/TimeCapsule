@@ -38,7 +38,7 @@ const Create_Capsule = () => {
 
       // ✅ Ensure message is always included
       if (sendToLovedOne) {
-        formData.append("recipientEmail", recipientEmail);
+        formData.append("email", recipientEmail);
         formData.append("message", "Sent to a loved one"); // ✅ Default message
       } else {
         formData.append("message", message);
