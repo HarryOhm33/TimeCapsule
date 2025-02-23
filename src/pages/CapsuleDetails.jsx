@@ -14,17 +14,39 @@ const CapsuleDetails = () => {
       try {
         const API_BASE_URL =
           import.meta.env.VITE_API_URL || "http://localhost:5000";
-        const { data } = await axios.get(`${API_BASE_URL}/api/mycapsule/${id}`);
+        const token = localStorage.getItem("token"); // ✅ Get the auth token from localStorage
+
+        if (!token) {
+          console.warn("⚠️ No token found. User might not be logged in.");
+          return; // Stop execution if no token
+        }
+
+        const { data } = await axios.get(
+          `${API_BASE_URL}/api/mycapsule/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` }, // ✅ Include Authorization token
+          }
+        );
+
         console.log("✅ Capsule Data:", data);
         setCapsule(data);
       } catch (error) {
-        console.error("❌ Error fetching capsule:", error);
+        console.error(
+          "❌ Error fetching capsule:",
+          error.response || error.message
+        );
+
+        if (error.response?.status === 401) {
+          alert("⚠️ Unauthorized. Please log in again.");
+          navigate("/auth"); // ✅ Redirect user to login page
+        }
       } finally {
         setLoading(false);
       }
     };
+
     fetchCapsule();
-  }, [id]);
+  }, [id, navigate]); // ✅ Add `navigate` as a dependency
 
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this capsule?"))
