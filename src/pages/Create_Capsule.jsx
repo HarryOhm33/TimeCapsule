@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../components/LoadingSpinner";
+import { toast } from "react-hot-toast";
 
 const Create_Capsule = () => {
   const [selectedDate, setSelectedDate] = useState("");
@@ -75,11 +76,10 @@ const Create_Capsule = () => {
         );
       }
 
-      alert(
-        sendToLovedOne
-          ? "🎉 Capsule sent to your loved one!"
-          : "🎉 Capsule Created Successfully!"
-      );
+      sendToLovedOne
+        ? toast.success("🎉 Capsule sent to your loved one!")
+        : toast.success("🎉 Capsule Created Successfully!");
+
       resetForm();
       navigate("/dashboard");
     } catch (error) {
