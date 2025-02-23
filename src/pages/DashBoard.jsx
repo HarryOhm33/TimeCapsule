@@ -57,7 +57,7 @@ const Dashboard = () => {
 
         if (error.response?.status === 401) {
           localStorage.removeItem("token"); // ✅ Remove invalid token
-          window.location.href = "/login"; // ✅ Redirect to login page
+          window.location.href = "/dashboard"; // ✅ Redirect to login page
         }
 
         setCapsules([]); // Prevent `.map()` error
