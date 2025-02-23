@@ -61,11 +61,17 @@ const Create_Capsule = () => {
         method: "POST",
         body: formData,
         headers: {
-          Authorization: `Bearer ${token}`, // ✅ Add this to authenticate request
+          Authorization: `Bearer ${token}`, // ✅ Correct authentication
+          // DO NOT set Content-Type, `fetch` will handle it automatically for FormData
         },
       });
 
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Failed to create capsule. Please try again."
+        );
+      }
 
       if (response.ok) {
         alert(
