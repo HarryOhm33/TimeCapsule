@@ -31,8 +31,8 @@ const Create_Capsule = () => {
     try {
       const formData = new FormData();
       formData.append("title", title);
-      formData.append("date", selectedDate);
-      // formData.append("date", new Date(selectedDate).toISOString()); // ✅ Convert to ISO format
+      // formData.append("date", selectedDate);
+      formData.append("date", new Date(selectedDate)); // ✅ Convert to ISO format
 
       // ✅ Ensure message is always included
       if (sendToLovedOne) {
