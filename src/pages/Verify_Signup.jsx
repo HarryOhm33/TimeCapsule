@@ -15,7 +15,7 @@ const Verify_Signup = () => {
 
   useEffect(() => {
     if (!email) {
-      setTimeout(() => navigate("/"), 1000); // ✅ Delays redirect to prevent crashes
+      navigate("/"); // ✅ Immediate redirect to home if email is missing
     }
   }, [email, navigate]);
 

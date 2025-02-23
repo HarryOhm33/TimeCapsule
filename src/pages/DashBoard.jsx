@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 const Dashboard = () => {
-  const [capsules, setCapsules] = useState([]);
+  const [capsules, setCapsules] = useState([]); // ✅ Default to an empty array
 
   // Dummy user data
   const user = {
     name: "John Doe",
-    profilePicture: "https://via.placeholder.com/150",
+    profilePicture: "https://placehold.co/150x150", // ✅ Alternative placeholder
     bio: "Time capsule enthusiast 🕰️",
     storageUsage: "1.2GB / 5GB",
   };
@@ -32,10 +32,12 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchCapsules = async () => {
       try {
-        const response = await axios.get("/api/mycapsule/");
-        setCapsules(response.data);
+        const API_BASE_URL =
+          import.meta.env.VITE_API_URL || "http://localhost:5000"; // ✅ Now it's defined
+        setCapsules(Array.isArray(response.data) ? response.data : []); // ✅ Ensure it's an array
       } catch (error) {
         console.error("Error fetching capsules:", error);
+        setCapsules([]); // ✅ Prevent `.map()` error
       }
     };
 
@@ -157,21 +159,15 @@ const Dashboard = () => {
         <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent mb-4">
           Your Capsules
         </h2>
-        {capsules.length === 0 ? (
-          <div className="flex justify-center items-center my-16">
-            <p className="font-bold text-gray-400 text-2xl">
-              No Capsules Found!
-            </p>
-          </div>
-        ) : (
+        {capsules && capsules.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {capsules.map((capsule, index) => (
+            {capsules.map((capsule) => (
               <motion.div
                 key={capsule._id}
                 className="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 shadow-xl border border-gray-700/50"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2, duration: 0.6 }}
+                transition={{ duration: 0.6 }}
                 whileHover={{ y: -5 }}
               >
                 <div className="text-4xl mb-4">
@@ -194,6 +190,10 @@ const Dashboard = () => {
               </motion.div>
             ))}
           </div>
+        ) : (
+          <p className="text-gray-400 text-center text-2xl font-semibold my-16">
+            No Capsules Found!
+          </p> // ✅ Prevents `.map()` error
         )}
 
         <Link to="/create_capsule">
@@ -251,6 +251,7 @@ const Dashboard = () => {
               src={user.profilePicture}
               alt="Profile"
               className="w-16 h-16 rounded-full"
+              onError={(e) => (e.target.src = "/default-profile.png")} // ✅ Local fallback image
             />
             <div>
               <h3 className="text-xl font-semibold">{user.name}</h3>
