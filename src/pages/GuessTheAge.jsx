@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { FaCircleExclamation } from "react-icons/fa6";
+import toast from "react-hot-toast";
 
 const images = [
   {
@@ -171,7 +172,7 @@ export default function GuessTheAge() {
               }`}
               onClick={() =>
                 showHint &&
-                alert(
+                toast.success(
                   `Hint: The picture was taken around ${
                     imageData.year - Math.floor(Math.random() * 3)
                   }!`
