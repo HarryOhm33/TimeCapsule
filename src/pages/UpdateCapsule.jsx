@@ -14,6 +14,32 @@ const Update_Capsule = () => {
   const [loading, setLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
+  // Enhanced particles with more variety
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 40 }, () => ({
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 6 + 2,
+        duration: Math.random() * 8 + 4,
+        blur: Math.random() > 0.5,
+      })),
+    []
+  );
+
+  // Floating shapes for background
+  const shapes = useMemo(
+    () =>
+      Array.from({ length: 6 }, () => ({
+        type: Math.random() > 0.5 ? "circle" : "square",
+        size: Math.random() * 300 + 100,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        rotation: Math.random() * 360,
+      })),
+    []
+  );
+
   useEffect(() => {
     const fetchCapsule = async () => {
       try {
@@ -24,12 +50,12 @@ const Update_Capsule = () => {
         const token = localStorage.getItem("token");
         if (!token) {
           alert("No token found! Please log in again.");
-          return navigate("/login"); // Redirect if user is not authenticated
+          return navigate("/login");
         }
 
         const response = await fetch(`${API_BASE_URL}/api/mycapsule/${id}`, {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ Include the token
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -85,7 +111,7 @@ const Update_Capsule = () => {
         method: "PUT",
         body: formData,
         headers: {
-          Authorization: `Bearer ${token}`, // ✅ Add the token in headers
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -120,20 +146,69 @@ const Update_Capsule = () => {
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
 
-  const particles = useMemo(
-    () =>
-      Array.from({ length: 40 }, () => ({
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 6 + 2,
-        duration: Math.random() * 8 + 4,
-        blur: Math.random() > 0.5,
-      })),
-    []
-  );
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100 pt-20 pb-10 relative overflow-hidden">
+      {/* Background Animation */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] animate-pulse-slow"></div>
+
+      {/* Animated Particles */}
+      {particles.map((particle, i) => (
+        <motion.div
+          key={`particle-${i}`}
+          className={`absolute rounded-full ${
+            particle.blur ? "bg-cyan-400/10" : "bg-cyan-400/20"
+          }`}
+          style={{
+            width: particle.size,
+            height: particle.size,
+            left: `${particle.x}%`,
+            top: `${particle.y}%`,
+            filter: particle.blur ? "blur(4px)" : "none",
+            zIndex: 1, // Ensure particles are below other elements
+          }}
+          animate={{
+            x: [0, Math.random() * 200 - 100],
+            y: [0, Math.random() * 200 - 100],
+            opacity: [0.2, 0.8, 0.2],
+            scale: [1, 1.5, 1],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            repeatType: "reverse",
+          }}
+        />
+      ))}
+
+      {/* Floating Shapes */}
+      {shapes.map((shape, i) => (
+        <motion.div
+          key={`shape-${i}`}
+          className={`absolute ${
+            shape.type === "circle" ? "rounded-full" : ""
+          } bg-cyan-400/10`}
+          style={{
+            width: shape.size,
+            height: shape.size,
+            left: `${shape.x}%`,
+            top: `${shape.y}%`,
+            rotate: shape.rotation,
+            zIndex: 1, // Ensure shapes are below other elements
+          }}
+          animate={{
+            x: [0, Math.random() * 50 - 25],
+            y: [0, Math.random() * 50 - 25],
+            rotate: [0, 360],
+          }}
+          transition={{
+            duration: Math.random() * 10 + 5,
+            repeat: Infinity,
+            repeatType: "mirror",
+          }}
+        />
+      ))}
+
+      {/* Main Content */}
       {loading ? (
         <Spinner />
       ) : (
@@ -170,7 +245,7 @@ const Update_Capsule = () => {
               onChange={(e) => setSelectedDate(e.target.value)}
             />
 
-            {/* ✅ Drag & Drop Box with GIF */}
+            {/* Drag & Drop Box with GIF */}
             <input
               id="fileInput"
               type="file"

@@ -2,6 +2,7 @@ import React, { useMemo, useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
+import Spinner from "../components/LoadingSpinner"; // ✅ Import Spinner
 
 const CapsuleDetails = () => {
   const { id } = useParams();
@@ -14,17 +15,17 @@ const CapsuleDetails = () => {
       try {
         const API_BASE_URL =
           import.meta.env.VITE_API_URL || "http://localhost:5000";
-        const token = localStorage.getItem("token"); // ✅ Get the auth token from localStorage
+        const token = localStorage.getItem("token");
 
         if (!token) {
           console.warn("⚠️ No token found. User might not be logged in.");
-          return; // Stop execution if no token
+          return;
         }
 
         const { data } = await axios.get(
           `${API_BASE_URL}/api/mycapsule/${id}`,
           {
-            headers: { Authorization: `Bearer ${token}` }, // ✅ Include Authorization token
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
@@ -38,7 +39,7 @@ const CapsuleDetails = () => {
 
         if (error.response?.status === 401) {
           alert("⚠️ Unauthorized. Please log in again.");
-          navigate("/auth"); // ✅ Redirect user to login page
+          navigate("/auth");
         }
       } finally {
         setLoading(false);
@@ -46,7 +47,7 @@ const CapsuleDetails = () => {
     };
 
     fetchCapsule();
-  }, [id, navigate]); // ✅ Add `navigate` as a dependency
+  }, [id, navigate]);
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
@@ -57,7 +58,7 @@ const CapsuleDetails = () => {
     try {
       const API_BASE_URL =
         import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const token = localStorage.getItem("token"); // ✅ Get token
+      const token = localStorage.getItem("token");
 
       if (!token) {
         alert("⚠️ You are not logged in. Please log in first.");
@@ -65,9 +66,7 @@ const CapsuleDetails = () => {
       }
 
       await axios.delete(`${API_BASE_URL}/api/mycapsule/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // ✅ Send token in headers
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       alert("✅ Capsule deleted successfully!");
@@ -82,6 +81,17 @@ const CapsuleDetails = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   const particles = useMemo(
     () =>
       Array.from({ length: 40 }, () => ({
@@ -94,21 +104,11 @@ const CapsuleDetails = () => {
     []
   );
 
-  const shapes = useMemo(
-    () =>
-      Array.from({ length: 6 }, () => ({
-        type: Math.random() > 0.5 ? "circle" : "square",
-        size: Math.random() * 300 + 100,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        rotation: Math.random() * 360,
-      })),
-    []
-  );
-
   if (loading) {
     return (
-      <div className="text-center text-gray-400 pt-32">Loading Capsule...</div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-gray-100">
+        <Spinner /> {/* ✅ Show Loading Spinner */}
+      </div>
     );
   }
 
@@ -124,34 +124,6 @@ const CapsuleDetails = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100 pt-24 pb-8 px-8 relative overflow-hidden">
       {/* Background Animation */}
       <div className="fixed inset-0 z-0 overflow-hidden">
-        {shapes.map((shape, i) => (
-          <motion.div
-            key={`shape-${i}`}
-            className={`absolute ${
-              shape.type === "circle" ? "rounded-full" : "rounded-lg"
-            } bg-gradient-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-3xl opacity-20`}
-            style={{
-              width: shape.size,
-              height: shape.size,
-              left: `${shape.x}%`,
-              top: `${shape.y}%`,
-              rotate: shape.rotation,
-            }}
-            animate={{
-              x: [0, Math.random() * 100 - 50],
-              y: [0, Math.random() * 100 - 50],
-              rotate: [0, 360],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-
         {particles.map((particle, i) => (
           <motion.div
             key={`particle-${i}`}
@@ -182,13 +154,13 @@ const CapsuleDetails = () => {
 
       {/* Capsule Details */}
       <motion.div
-        className="max-w-4xl mx-auto relative z-10"
+        className="max-w-3xl mx-auto bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 shadow-lg border border-gray-700/50 relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
         <motion.h1
-          className="text-4xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent"
+          className="text-4xl font-bold text-center bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -200,32 +172,34 @@ const CapsuleDetails = () => {
           <motion.img
             src={capsule.imageUrl}
             alt={capsule.title}
-            className="w-full h-64 object-cover rounded-lg shadow-lg mb-6"
+            className="w-full h-64 object-cover rounded-lg shadow-md mt-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           />
         )}
 
-        <motion.div
-          className="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 shadow-xl border border-gray-700/50 mb-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-        >
-          <p className="text-gray-300">
-            {capsule.message || "No message available."}
-          </p>
-        </motion.div>
+        <p className="text-gray-300 mt-4">
+          {capsule.message || "No message available."}
+        </p>
 
-        {/* Check if `tags` exist before mapping */}
+        <div className="mt-6 p-4 bg-gray-900/50 rounded-lg">
+          <p className="text-sm text-gray-400">
+            <span className="text-cyan-300">📅 Created At:</span>{" "}
+            {formatDate(capsule.createdAt)}
+          </p>
+          <p className="text-sm text-gray-400">
+            <span className="text-green-300">⏳ Unlock Date:</span>{" "}
+            {formatDate(capsule.date)}
+          </p>
+          <p className="text-sm text-gray-400">
+            <span className="text-yellow-300">🔄 Last Updated:</span>{" "}
+            {formatDate(capsule.updatedAt)}
+          </p>
+        </div>
+
         {capsule.tags && capsule.tags.length > 0 && (
-          <motion.div
-            className="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 shadow-xl border border-gray-700/50 mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-          >
+          <div className="mt-4">
             <h3 className="text-xl font-semibold text-cyan-400 mb-2">Tags</h3>
             <div className="flex flex-wrap gap-2">
               {capsule.tags.map((tag, index) => (
@@ -233,24 +207,29 @@ const CapsuleDetails = () => {
                   key={index}
                   className="px-3 py-1 bg-cyan-500/10 text-cyan-400 rounded-full text-sm"
                 >
-                  {tag}
+                  #{tag}
                 </span>
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Buttons */}
-        <div className="flex gap-4">
+        <div className="flex justify-between mt-6">
           <Link
             to={`/dashboard/update-capsule/${capsule._id}`}
-            className="btn-primary"
+            className="px-5 py-3 bg-blue-500 text-black font-semibold rounded-lg shadow-lg transition-transform hover:scale-105 active:scale-95"
           >
-            Update Capsule
+            ✏️ Update Capsule
           </Link>
-          <button onClick={handleDelete} className="btn-danger">
-            Delete Capsule
-          </button>
+          <motion.button
+            onClick={handleDelete}
+            className="px-5 py-3 bg-red-500 text-black font-semibold rounded-lg shadow-lg transition-transform hover:scale-105 active:scale-95"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            🗑 Delete Capsule
+          </motion.button>
         </div>
       </motion.div>
     </div>
