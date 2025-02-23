@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { toast } from "react-hot-toast";
 
 const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false); // ✅ Loading state
@@ -60,7 +61,7 @@ const AuthForm = () => {
 
     // Check if passwords match during signup
     if (type === "signup" && formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match. Please try again.");
+      toast.error("Passwords do not match. Please try again.");
       setIsLoading(false); // ✅ Hide spinner on mismatch
       return;
     }
@@ -85,9 +86,10 @@ const AuthForm = () => {
           "OTP sent to email. Verify to complete registration."
         ) {
           // Redirect to OTP verification page with email
+          toast.success("Otp Sent!!");
           navigate("/auth/signup/verify", { state: { email: formData.email } });
         } else {
-          alert("Signup failed. Please try again.");
+          toast.error("Signup failed. Please try again.");
         }
       } else if (type === "signin") {
         // ✅ Save token in localStorage
@@ -98,8 +100,9 @@ const AuthForm = () => {
 
         // ✅ Reload to reflect login state in Navbar
         window.location.href = "/dashboard";
+        toast.success("You Are Now Logged In!");
       } else {
-        alert("Something went wrong. Please try again.");
+        toast.error("Something went wrong. Please try again.");
       }
     } catch (error) {
       console.error("API Error:", error);
@@ -107,11 +110,11 @@ const AuthForm = () => {
 
       if (error.response) {
         console.log("Error Response Data:", error.response.data);
-        alert(
+        toast.error(
           error.response.data.message || "An error occurred. Please try again."
         );
       } else {
-        alert("An error occurred. Please check your connection.");
+        toast.error("An error occurred. Please check your connection.");
       }
     }
     setIsLoading(false); // ✅ Hide spinner when API call ends
