@@ -113,7 +113,7 @@ const FunZone = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link to="/fun-zone/guess-the-age">
+                  <Link to="/fun-zone/guess-game">
                     {" "}
                     {/* Replace with your desired route */}
                     <button className="px-6 py-3 bg-purple-500/10 text-purple-400 font-semibold rounded-lg hover:bg-purple-500/20 transition-colors">
