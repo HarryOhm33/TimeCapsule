@@ -15,8 +15,7 @@ const Verify_Signup = () => {
 
   useEffect(() => {
     if (!email) {
-      // Redirect to a valid route if email is not available
-      navigate("/"); // Or any other valid route
+      setTimeout(() => navigate("/"), 1000); // ✅ Delays redirect to prevent crashes
     }
   }, [email, navigate]);
 
@@ -26,14 +25,15 @@ const Verify_Signup = () => {
       return;
     }
 
+    const API_BASE_URL =
+      import.meta.env.VITE_API_URL || "http://localhost:5000";
+
     try {
       const response = await axios.post(
-        "/api/auth/verify-otp", // Removed localhost and used proxy path
+        `${API_BASE_URL}/api/auth/verify-otp`, // ✅ Correct - Uses environment variable
         { email, otp },
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
 
