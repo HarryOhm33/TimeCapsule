@@ -2,7 +2,7 @@ import React, { useMemo, useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
-import Spinner from "../components/LoadingSpinner"; // ✅ Import Spinner
+import Spinner from "../components/LoadingSpinner";
 
 const CapsuleDetails = () => {
   const { id } = useParams();
@@ -107,7 +107,7 @@ const CapsuleDetails = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900 text-gray-100">
-        <Spinner /> {/* ✅ Show Loading Spinner */}
+        <Spinner />
       </div>
     );
   }
@@ -152,15 +152,16 @@ const CapsuleDetails = () => {
         ))}
       </div>
 
-      {/* Capsule Details */}
+      {/* Capsule Details Card */}
       <motion.div
-        className="max-w-3xl mx-auto bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 shadow-lg border border-gray-700/50 relative z-10"
+        className="max-w-3xl mx-auto bg-gray-800/30 backdrop-blur-lg rounded-xl p-8 shadow-lg border border-gray-700/30 relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
+        {/* Title */}
         <motion.h1
-          className="text-4xl font-bold text-center bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent pb-10"
+          className="text-4xl font-bold text-center bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent mb-8"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -168,22 +169,25 @@ const CapsuleDetails = () => {
           {capsule.title}
         </motion.h1>
 
+        {/* Image */}
         {capsule.imageUrl && (
           <motion.img
             src={capsule.imageUrl}
             alt={capsule.title}
-            className="w-full h-64 object-cover rounded-lg shadow-md mt-4"
+            className="w-full h-64 object-cover rounded-lg shadow-md mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           />
         )}
 
-        <p className="text-gray-300 mt-4">
+        {/* Message */}
+        <p className="text-gray-300 text-lg mb-6">
           {capsule.message || "No message available."}
         </p>
 
-        <div className="mt-6 p-4 bg-gray-900/50 rounded-lg">
+        {/* Metadata */}
+        <div className="space-y-4 mb-6">
           <p className="text-sm text-gray-400">
             <span className="text-cyan-300">📅 Created At:</span>{" "}
             {formatDate(capsule.createdAt)}
@@ -198,8 +202,9 @@ const CapsuleDetails = () => {
           </p>
         </div>
 
+        {/* Tags */}
         {capsule.tags && capsule.tags.length > 0 && (
-          <div className="mt-4">
+          <div className="mb-6">
             <h3 className="text-xl font-semibold text-cyan-400 mb-2">Tags</h3>
             <div className="flex flex-wrap gap-2">
               {capsule.tags.map((tag, index) => (
@@ -218,13 +223,13 @@ const CapsuleDetails = () => {
         <div className="flex justify-between mt-6">
           <Link
             to={`/dashboard/update-capsule/${capsule._id}`}
-            className="px-5 py-3 bg-blue-500 text-black font-semibold rounded-lg shadow-lg transition-transform hover:scale-105 active:scale-95"
+            className="px-5 py-3 bg-blue-500/10 text-blue-400 font-semibold rounded-lg shadow-lg hover:bg-blue-500/20 transition-colors"
           >
             ✏️ Update Capsule
           </Link>
           <motion.button
             onClick={handleDelete}
-            className="px-5 py-3 bg-red-500 text-black font-semibold rounded-lg shadow-lg transition-transform hover:scale-105 active:scale-95"
+            className="px-5 py-3 bg-red-500/10 text-red-400 font-semibold rounded-lg shadow-lg hover:bg-red-500/20 transition-colors"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
