@@ -49,16 +49,36 @@ const CapsuleDetails = () => {
   }, [id, navigate]); // ✅ Add `navigate` as a dependency
 
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this capsule?"))
-      return;
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this capsule?"
+    );
+    if (!confirmDelete) return;
 
     try {
       const API_BASE_URL =
         import.meta.env.VITE_API_URL || "http://localhost:5000";
-      await axios.delete(`${API_BASE_URL}/api/mycapsule/${id}`);
+      const token = localStorage.getItem("token"); // ✅ Get token
+
+      if (!token) {
+        alert("⚠️ You are not logged in. Please log in first.");
+        return;
+      }
+
+      await axios.delete(`${API_BASE_URL}/api/mycapsule/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ Send token in headers
+        },
+      });
+
+      alert("✅ Capsule deleted successfully!");
       navigate("/dashboard");
     } catch (error) {
       console.error("❌ Error deleting capsule:", error);
+      alert(
+        `❌ Failed to delete capsule: ${
+          error.response?.data?.message || error.message
+        }`
+      );
     }
   };
 
