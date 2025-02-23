@@ -48,13 +48,21 @@ const Create_Capsule = () => {
 
       console.log("🚀 Sending FormData:", Object.fromEntries(formData));
 
+      const API_BASE_URL =
+        import.meta.env.VITE_API_URL || "http://localhost:5000";
+
       const apiEndpoint = sendToLovedOne
-        ? "/api/capsule/create"
-        : "/api/mycapsule/";
+        ? `${API_BASE_URL}/api/capsule/create`
+        : `${API_BASE_URL}/api/mycapsule/`;
+
+      const token = localStorage.getItem("token");
 
       const response = await fetch(apiEndpoint, {
         method: "POST",
-        body: formData, // ✅ Correctly sending FormData
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ Add this to authenticate request
+        },
       });
 
       const data = await response.json();
