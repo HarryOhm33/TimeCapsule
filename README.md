@@ -77,7 +77,7 @@ npm install
 Create a _.env_ file inside frontend and add:
 
 ```sh
-REACT_APP_BACKEND_URL=http://localhost:5000
+VITE_API_URL=http://localhost:5000
 ```
 
 ### _4. Run the Application_
