@@ -63,7 +63,7 @@ The _frontend_ of the _Digital Time Capsule_ is built using _React.js_, providin
 
 ```sh
 git clone https://github.com/anishk85/time-capsule
-cd time-capsule/frontend
+cd time-capsule
 ```
 
 ### _2. Install Dependencies_
