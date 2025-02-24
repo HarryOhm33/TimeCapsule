@@ -59,20 +59,20 @@ The _frontend_ of the _Digital Time Capsule_ is built using _React.js_, providin
 
 ## _🔧 Installation & Setup_
 
-### _⿡ Clone the Repository_
+### _1. Clone the Repository_
 
 ```sh
 git clone https://github.com/anishk85/time-capsule
 cd time-capsule/frontend
 ```
 
-### _⿢ Install Dependencies_
+### _2. Install Dependencies_
 
 ```sh
 npm install
 ```
 
-### _⿣ Set Up Environment Variables_
+### _3. Set Up Environment Variables_
 
 Create a _.env_ file inside frontend and add:
 
@@ -80,7 +80,7 @@ Create a _.env_ file inside frontend and add:
 REACT_APP_BACKEND_URL=http://localhost:5000
 ```
 
-### _⿤ Run the Application_
+### _4. Run the Application_
 
 ```sh
 npm run dev
