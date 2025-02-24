@@ -9,7 +9,7 @@ const Dashboard = () => {
 
   // Dummy user data
   const user = {
-    name: name,
+    name: name.charAt(0).toUpperCase() + name.slice(1),
     profilePicture: "https://placehold.co/150x150", // ✅ Alternative placeholder
     bio: "Time capsule enthusiast 🕰️",
     storageUsage: "1.2GB / 5GB",
