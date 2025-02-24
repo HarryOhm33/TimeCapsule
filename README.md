@@ -31,7 +31,7 @@ The _frontend_ of the _Digital Time Capsule_ is built using _React.js_, providin
 │   │   ├── 📄 UpdateCapsule.jsx
 │   │   ├── 📄 Verify_Signup.jsx
 │   ├── 📂 utils
-│   │   ├── 📄 App.jsx
+│   ├── 📄 App.jsx
 │   ├── 📄 index.css
 │   ├── 📄 main.jsx
 │── 📄 .env
